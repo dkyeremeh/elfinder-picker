@@ -18,12 +18,12 @@
 				popup.show();
 			}
 			else{
-				popup = $( "<div class='elFinder-picker'>\
-					<div class='elFinder-picker-backdrop'></div>\
-					<div class='elFinder-picker-content content'>\
-						<h3>File Manager</h3>\
+				popup = $( "<div class='elfinder-picker'>\
+					<div class='elfinder-picker-backdrop'></div>\
+					<div class='elfinder-picker-content'>\
+						<h3 class='elfinder-picker-title'>File Manager</h3>\
 						<div class='elfinder-picker-close'>&times;</div>\
-						<iframe class='elFinder-picker-iframe' src='" + settings.url + "'></iframe>\
+						<iframe class='elfinder-picker-iframe' src='" + settings.url + "'></iframe>\
 					</div>\
 				</div>" );
 				$( document.body ).append( popup );
@@ -40,7 +40,6 @@
 					settings[ field ] = config[ field ]; 
 				}
 			});
-			console.log(settings)
 		},
 		oninsert: function( file ){
 			var url, reg, info;

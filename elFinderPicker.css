@@ -1,1 +1,47 @@
  
+.elfinder-picker{
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	background: rgba(255,255,255,0.6);
+	top: 0;
+	left: 0;
+	z-index: 1000;
+	overflow: auto;
+}
+.elfinder-picker-backdrop{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	top: 0;
+}
+.elfinder-picker-content{
+	padding: 16px;
+	position: relative;
+	top: 2rem;
+	margin: 2rem auto;
+	width: 80%;
+	min-width: 35%;
+	max-width: 1000px;
+	background: white;
+	box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.22);
+	box-sizing: border-box;
+}
+.elfinder-picker-close{
+	position: absolute;
+	top: 16px;
+	right: 30px;
+	cursor: pointer;
+	font-size: 24px;
+	z-index: 1;
+	opacity: 0.6;
+}
+.elfinder-picker-title{
+	margin: 5px 30px 5px 10px;
+}
+.elfinder-picker-iframe{
+	border: 0;
+	width: 100%;
+	height: 450px;
+}
