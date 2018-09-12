@@ -23,7 +23,7 @@
 					<div class='elfinder-picker-content'>\
 						<h3 class='elfinder-picker-title'>File Manager</h3>\
 						<div class='elfinder-picker-close'>&times;</div>\
-						<iframe class='elfinder-picker-iframe' src='" + settings.url + "'></iframe>\
+						<iframe class='elfinder-picker-iframe' src='" + settings.url + "' allowfullscreen></iframe>\
 					</div>\
 				</div>" );
 				$( document.body ).append( popup );
