@@ -1,8 +1,8 @@
 {
-  "name": "elfinder-picker",
-  "version": "1.0.0",
-  "main": "index.js",
-  "repository": "https://github.com/dekyfin/elfinder-picker.git",
-  "author": "Desmond Kyeremeh <elDekyfin@gmail.com>",
-  "license": "MIT"
+    "name": "elfinder-picker",
+    "version": "1.0.1",
+    "main": "index.js",
+    "repository": "https://github.com/dkyeremeh/elfinder-picker.git",
+    "author": "Desmond Kyeremeh <elDekyfin@gmail.com>",
+    "license": "MIT"
 }

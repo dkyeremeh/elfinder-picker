@@ -13,8 +13,14 @@ Coming soon
 ### Bower
 Run `bower install elfinder-picker`
 
+### NPM
+Run `npm i -s elfinder-picker`
+
+### Yarn
+Run `yarn add elfinder-picker`
+
 ### Manual Install
-Downoad [elFinder Picker](https://github.com/dekyfin/elfinder-picker/archive/master.zip)
+Downoad [elFinder Picker](https://github.com/dkyeremeh/elfinder-picker/archive/master.zip)
 
 ### Add to Project
 

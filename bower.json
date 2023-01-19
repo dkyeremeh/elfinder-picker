@@ -1,22 +1,10 @@
 {
-  "name": "elfinder-picker",
-  "homepage": "https://github.com/dekyfin/elfinder-picker",
-  "authors": [
-    "Dekyfin <info@dekyfin.com>"
-  ],
-  "description": "A file picker for elFinder file manager",
-  "main": "elFinderPicker.js",
-  "keywords": [
-    "elFinder",
-    "file-picker",
-    "tinyMCE"
-  ],
-  "license": "MIT",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ]
+    "name": "elfinder-picker",
+    "homepage": "https://github.com/dkyeremeh/elfinder-picker",
+    "authors": ["Desmond Kyeremeh <elDekyfin@gmail.com>"],
+    "description": "A file picker for elFinder file manager",
+    "main": "elFinderPicker.js",
+    "keywords": ["elFinder", "file-picker", "tinyMCE"],
+    "license": "MIT",
+    "ignore": ["**/.*", "node_modules", "bower_components", "test", "tests"]
 }
