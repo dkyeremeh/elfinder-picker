@@ -51,16 +51,18 @@ Downoad [elFinder Picker](https://github.com/dkyeremeh/elfinder-picker/archive/m
 ```javascript
 
 // We use this to configure whether double-clicking should open or select file
-var isOpenMode =
-	!window.frameElement ||
-	window.frameElement.getAttribute("data-mode") === "open";
+var isSelectMode =
+	window.frameElement &&
+	window.frameElement.getAttribute("data-mode") === "select";
+
+var selectFile = function(file, fm) {
+	parent.elFinderPicker.oninsert(file, fm);
+}
 
 // Configuration for elFinder
 {
 	url : '/path/to/elfinder/connector.php',
-	getFileCallback : isOpenMode ? undefined : function(file, fm) {
-		parent.elFinderPicker.oninsert(file, fm);
-	}
+	getFileCallback : isSelectMode ? selectFile : undefined
 }
 ```
 

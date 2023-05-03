@@ -1,32 +1,31 @@
 'use strict';
 
 (function ($) {
-  var settings = {
+  const settings = {
     url: '',
   };
 
-  var callback, meta, value, popup;
+  let callback, meta, popup;
 
   window.elFinderPicker = {
     open: function (cb, v, m) {
       callback = cb;
-      value = v;
       meta = m;
 
       if (popup) {
         popup.show();
       } else {
         popup = $(
-          "<div class='elfinder-picker'>\
-					<div class='elfinder-picker-backdrop'></div>\
-					<div class='elfinder-picker-content'>\
-						<h3 class='elfinder-picker-title'>File Manager</h3>\
-						<div class='elfinder-picker-close'>&times;</div>\
-						<iframe class='elfinder-picker-iframe' src='" +
+          "  <div class='elfinder-picker'>" +
+            "	<div class='elfinder-picker-backdrop'></div>" +
+            "	<div class='elfinder-picker-content'>" +
+            "		<h3 class='elfinder-picker-title'>File Manager</h3>" +
+            "		<div class='elfinder-picker-close'>&times;</div>" +
+            "		<iframe class='elfinder-picker-iframe' src='" +
             settings.url +
-            "' allowfullscreen data-mode='select'></iframe>\
-					</div>\
-				</div>"
+            "' allowfullscreen data-mode='select'></iframe>" +
+            '	</div>' +
+            '</div>'
         );
         $(document.body).append(popup);
         popup
@@ -38,7 +37,7 @@
       return popup;
     },
     config: function (config) {
-      var fields = ['url'];
+      const fields = ['url'];
 
       fields.forEach(function (field) {
         if (config[field]) {
@@ -47,7 +46,7 @@
       });
     },
     oninsert: function (file) {
-      var url, reg, info;
+      let url, reg, info;
 
       meta = meta || { filetype: 'file' };
 
