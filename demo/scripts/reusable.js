@@ -1,6 +1,6 @@
-import ElFinderPicker, { type ElFinderFile } from '../../index';
+import ElFinderPicker from '../../src/index.ts';
 
-const ELFINDER_URL = '/demo/elfinder.html';
+const ELFINDER_URL = '/elfinder.html';
 
 // Create picker instance ONCE (reusable)
 const reusablePicker = new ElFinderPicker({
@@ -8,9 +8,9 @@ const reusablePicker = new ElFinderPicker({
 });
 
 let selectionCount = 0;
-const selections: ElFinderFile[] = [];
+const selections = [];
 
-function displayReusableResult(file: ElFinderFile) {
+function displayReusableResult(file) {
   const resultElement = document.getElementById('result');
   if (!resultElement) return;
 

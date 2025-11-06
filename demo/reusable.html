@@ -9,7 +9,7 @@
 <body>
   <div class="container">
     <nav class="breadcrumb">
-      <a href="/demo/">← Back to Gallery</a>
+      <a href="/">← Back to Gallery</a>
     </nav>
 
     <h1>Reusable Picker Instance</h1>
@@ -33,7 +33,7 @@
 
 // Create picker instance ONCE
 const picker = new ElFinderPicker({
-  url: '/demo/elfinder.html'
+  url: '/elfinder.html'
 });
 
 // Reuse the same instance multiple times
@@ -49,6 +49,6 @@ button.addEventListener('click', () => {
     </div>
   </div>
 
-  <script type="module" src="/demo/scripts/reusable.ts"></script>
+  <script type="module" src="/scripts/reusable.js"></script>
 </body>
 </html>

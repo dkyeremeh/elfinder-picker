@@ -1,16 +1,8 @@
-import ElFinderPicker, { type ElFinderFile } from '../../index';
+import ElFinderPicker from '../../src/index.ts';
 
-const ELFINDER_URL = '/demo/elfinder.html';
+const ELFINDER_URL = '/elfinder.html';
 
-interface CustomMetadata {
-  type: string;
-  context: string;
-  timestamp: string;
-  userAgent: string;
-  screenResolution: string;
-}
-
-function displayCustomResult(file: ElFinderFile, metadata: CustomMetadata) {
+function displayCustomResult(file, metadata) {
   const resultElement = document.getElementById('result');
   if (!resultElement) return;
 
@@ -63,7 +55,7 @@ if (button) {
     });
 
     // Custom metadata
-    const metadata: CustomMetadata = {
+    const metadata = {
       type: 'file',
       context: 'demo-custom-config',
       timestamp: new Date().toISOString(),

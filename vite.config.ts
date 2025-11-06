@@ -5,8 +5,8 @@ import { resolve } from 'path';
 const buildLibrary = process.env.BUILD_TARGET === 'lib';
 
 export default defineConfig({
-  root: buildLibrary ? './' : './',
-  publicDir: buildLibrary ? false : 'src/demo',
+  root: buildLibrary ? './' : 'demo',
+  publicDir: buildLibrary ? false : 'demo',
   build: buildLibrary ? {
     // Library build configuration
     outDir: 'dist',
@@ -28,22 +28,11 @@ export default defineConfig({
     sourcemap: true,
     emptyOutDir: true
   } : {
-    // Demo build configuration
-    outDir: 'dist-demo',
-    rollupOptions: {
-      input: {
-        main: resolve(__dirname, 'src/demo/index.html'),
-        basic: resolve(__dirname, 'src/demo/basic.html'),
-        image: resolve(__dirname, 'src/demo/image.html'),
-        custom: resolve(__dirname, 'src/demo/custom.html'),
-        reusable: resolve(__dirname, 'src/demo/reusable.html'),
-        elfinder: resolve(__dirname, 'src/demo/elfinder.html'),
-        mockElfinder: resolve(__dirname, 'src/demo/mock-elfinder.html'),
-      }
-    }
+    // Demo build configuration (serve static files from demo/)
+    outDir: 'dist-demo'
   },
   server: {
     port: 3000,
-    open: '/src/demo/index.html'
+    open: '/index.html'
   }
 });
