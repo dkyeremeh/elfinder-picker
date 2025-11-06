@@ -1,8 +1,38 @@
 {
   "name": "elfinder-picker",
-  "version": "1.1.1",
-  "main": "index.js",
-  "repository": "https://github.com/dkyeremeh/elfinder-picker.git",
+  "version": "2.0.0",
+  "description": "Modern ESM file picker for elFinder with auto-injected styles and no jQuery dependency",
+  "type": "module",
+  "main": "./elFinderPicker.mjs",
+  "module": "./elFinderPicker.mjs",
+  "exports": {
+    ".": "./elFinderPicker.mjs",
+    "./elFinderPicker.css": "./elFinderPicker.css"
+  },
+  "files": [
+    "elFinderPicker.mjs",
+    "elFinderPicker.css",
+    "README.md"
+  ],
+  "keywords": [
+    "elfinder",
+    "file-picker",
+    "file-browser",
+    "file-manager",
+    "tinymce",
+    "esm",
+    "es-modules",
+    "vanilla-js",
+    "no-jquery"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dkyeremeh/elfinder-picker.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dkyeremeh/elfinder-picker/issues"
+  },
+  "homepage": "https://github.com/dkyeremeh/elfinder-picker#readme",
   "author": "Desmond Kyeremeh <elDekyfin@gmail.com>",
   "license": "MIT"
 }
