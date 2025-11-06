@@ -1,14 +1,19 @@
 {
   "name": "elfinder-picker",
   "version": "2.0.0",
-  "description": "Modern ESM file picker for elFinder with auto-injected styles and no jQuery dependency",
+  "description": "Modern ESM file picker for elFinder with auto-injected styles, zero dependencies, and minimal configuration",
   "type": "module",
   "main": "./index.mjs",
-  "module": "./elFinderPicker.mjs",
+  "module": "./index.mjs",
   "exports": {
     ".": "./index.mjs",
     "./elFinderPicker.css": "./elFinderPicker.css"
   },
+  "files": [
+    "index.mjs",
+    "elFinderPicker.css",
+    "README.md"
+  ],
   "keywords": [
     "elfinder",
     "file-picker",
@@ -18,7 +23,8 @@
     "esm",
     "es-modules",
     "vanilla-js",
-    "no-jquery"
+    "no-jquery",
+    "zero-dependencies"
   ],
   "repository": {
     "type": "git",

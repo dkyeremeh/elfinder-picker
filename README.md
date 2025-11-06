@@ -49,91 +49,75 @@ const picker = new ElFinderPicker({
   url: '/path/to/elfinder.html'
 });
 
-// Open the picker with a callback
-picker.open((url, info) => {
-  console.log('Selected file:', url, info);
-  document.getElementById('myInput').value = url;
+// Open the picker with a callback that receives the file object
+picker.open((file) => {
+  console.log('Selected file:', file);
+  // file = { url: '...', name: '...', mime: 'image/jpeg' }
+
+  document.getElementById('myInput').value = file.url;
+  document.getElementById('fileName').textContent = file.name;
 });
 ```
 
 ## Configure elFinder
 
-Configure elFinder to work with the picker using `postMessage` for secure iframe communication. **No global variables needed!**
+### Step 1: Setup Your Main Application
 
-### In Your Main Application
-
-Simply create your picker instance:
+Create your picker instance and use it:
 
 ```javascript
 import ElFinderPicker from 'elfinder-picker';
 
 const picker = new ElFinderPicker({ url: '/path/to/elfinder.html' });
 
-// That's it! No need to expose anything globally.
-```
-
-### In Your elFinder HTML Page
-
-Configure elFinder to use `postMessage` to send selected files back to the parent:
-
-```javascript
-// Detect if we're in select mode (inside the picker iframe)
-const isSelectMode =
-  window.frameElement &&
-  window.frameElement.getAttribute("data-mode") === "select";
-
-const selectFile = function(file, fm) {
-  // Send file data to parent window using postMessage
-  if (window.parent) {
-    window.parent.postMessage({
-      action: 'FILE_SELECTED',
-      file: {
-        url: file.url,
-        name: file.name,
-        type: file.mime && file.mime.startsWith('image/') ? 'image' : 'file'
-      }
-    }, '*');
-  }
-}
-
-// Configuration for elFinder
-$('#elfinder').elfinder({
-  url: '/path/to/elfinder/connector.php',
-  getFileCallback: isSelectMode ? selectFile : undefined
+// Open the picker and handle file selection
+document.getElementById('selectFileBtn').addEventListener('click', () => {
+  picker.open((file) => {
+    console.log('Selected file:', file.url, file.name, file.mime);
+    document.getElementById('fileInput').value = file.url;
+  });
 });
 ```
 
-### Message Format
+### Step 2: Setup Your elFinder Page
 
-The postMessage data should have this structure:
+Import and use the provided helper callback (minimal code required):
 
 ```javascript
-{
-  action: 'FILE_SELECTED',           // Action type (required, PascalCase)
-  file: {                           // File object (required)
-    url: string,                    // File URL (required)
-    name: string,                   // File name (required)
-    type: 'file' | 'image' | 'media'  // File type (optional, defaults to 'file')
-  }
-}
+import { filePickerCallback } from 'elfinder-picker';
+
+// Configure elFinder with the helper
+$('#elfinder').elfinder({
+  url: '/path/to/elfinder/connector.php',
+  getFileCallback: filePickerCallback  // That's it!
+});
 ```
 
-### Security Note
+The helper automatically handles everything for you:
+- ✅ Detects if running in picker mode
+- ✅ Sends file data (URL, name, MIME type) back to the picker
+- ✅ Zero configuration needed
 
-For production, replace `'*'` with your specific origin:
+### Production Security (Optional)
+
+Restrict postMessage to your specific domain:
 
 ```javascript
-window.parent.postMessage({
-  action: 'FILE_SELECTED',
-  file: {
-    url: file.url,
-    name: file.name,
-    type: 'file'// 'file' | 'image' | 'media'
-  }
-}, 'https://yourdomain.com');
+import { createFilePickerCallback } from 'elfinder-picker';
+
+const callback = createFilePickerCallback({
+  origin: 'https://yourdomain.com'  // Only allow messages to your domain
+});
+
+$('#elfinder').elfinder({
+  url: '/path/to/elfinder/connector.php',
+  getFileCallback: callback
+});
 ```
 
 ## TinyMCE Integration
+
+TinyMCE needs different response formats depending on which dialog is open. Use the MIME type to determine how to format the response:
 
 ```javascript
 import ElFinderPicker from 'elfinder-picker';
@@ -144,13 +128,42 @@ tinymce.init({
   selector: '.text-editor',
   height: 350,
   plugins: ['link', 'image', 'media'],
-  file_picker_callback: (cb, value, meta) => {
-    picker.open(cb, value, meta);
+  file_picker_callback: (callback, value, meta) => {
+    picker.open((file) => {
+      // Format response based on TinyMCE dialog type
+      if (meta.filetype === 'image') {
+        callback(file.url, { alt: file.name });
+      } else if (meta.filetype === 'media') {
+        callback(file.url);
+      } else {
+        // For links/files
+        callback(file.url, { text: file.name, title: file.name });
+      }
+    });
   },
 });
 ```
 
+You can also use the file's MIME type to make decisions:
+
+```javascript
+file_picker_callback: (callback, value, meta) => {
+  picker.open((file) => {
+    // Use MIME type to determine file category
+    if (file.mime.startsWith('image/')) {
+      callback(file.url, { alt: file.name });
+    } else if (file.mime.startsWith('video/') || file.mime.startsWith('audio/')) {
+      callback(file.url);
+    } else {
+      callback(file.url, { text: file.name, title: file.name });
+    }
+  });
+}
+```
+
 ## API Reference
+
+### ElFinderPicker Class
 
 #### Constructor
 ```javascript
@@ -160,21 +173,84 @@ new ElFinderPicker(config)
 
 #### Methods
 
-- **`open(callback, value, meta)`**: Open the file picker
-  - `callback` (Function): Function called with selected file `(url, info)`
-  - `value` (any): Current value (optional)
-  - `meta` (Object): Metadata object with `type` property (`'file'`, `'image'`, or `'media'`)
+##### `open(callback)`
+Open the file picker modal
 
-- **`config(config)`**: Update configuration
-  - `config.url` (string): URL to your elFinder instance
+**Parameters:**
+- `callback` (Function): Called when a file is selected. Receives a file object:
+  ```javascript
+  {
+    url: string,   // Normalized file URL
+    name: string,  // File name
+    mime: string   // MIME type (e.g., 'image/jpeg', 'application/pdf')
+  }
+  ```
 
-- **`close()`**: Close the picker modal
+**Example:**
+```javascript
+picker.open((file) => {
+  console.log(file.url, file.name, file.mime);
 
-- **`destroy()`**: Remove the picker from DOM and clean up
+  // Check if it's an image
+  if (file.mime.startsWith('image/')) {
+    // Handle image
+  }
+});
+```
 
-- **`onSelect(file)`**: Called by elFinder when a file is selected (internal use)
-  - `file.url` (string): File URL
-  - `file.name` (string): File name
+##### `config(config)`
+Update picker configuration
+- `config.url` (string): URL to your elFinder instance
+
+##### `close()`
+Close the picker modal
+
+##### `destroy()`
+Remove the picker from DOM and clean up resources
+
+### Helper Functions
+
+#### `filePickerCallback(file, fm, options)`
+Ready-to-use callback for elFinder's `getFileCallback`. Automatically sends file data (URL, name, MIME type) to the parent picker.
+
+**Parameters:**
+- `file` (Object): File object from elFinder
+- `fm` (Object): elFinder instance
+- `options` (Object): Optional configuration
+  - `options.origin` (string): Target origin for postMessage (default: `'*'`)
+
+**Example:**
+```javascript
+import { filePickerCallback } from 'elfinder-picker';
+
+$('#elfinder').elfinder({
+  url: '/connector.php',
+  getFileCallback: filePickerCallback
+});
+```
+
+#### `createFilePickerCallback(options)`
+Creates a configured file picker callback with custom origin for production security
+
+**Parameters:**
+- `options` (Object): Configuration options
+  - `options.origin` (string): Target origin for postMessage
+
+**Returns:** Function compatible with elFinder's `getFileCallback`
+
+**Example:**
+```javascript
+import { createFilePickerCallback } from 'elfinder-picker';
+
+const callback = createFilePickerCallback({
+  origin: 'https://yourdomain.com'
+});
+
+$('#elfinder').elfinder({
+  url: '/connector.php',
+  getFileCallback: callback
+});
+```
 
 ## License
 

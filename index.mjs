@@ -97,41 +97,28 @@ class ElFinderPicker {
 
   /**
    * Handle file selection from elFinder
-   * @param {Object} file - File object from elFinder
+   * @param {Object} file - Raw file object from elFinder
    * @param {string} file.url - File URL
    * @param {string} file.name - File name
-   * @param {string} file.type - Type of file: 'file' | 'image' | 'media'
+   * @param {string} file.mime - MIME type (e.g., 'image/jpeg', 'application/pdf')
    */
   onSelect(file) {
-    let url, reg, info;
-
     // URL normalization
-    url = file.url;
-    reg = /\/[^/]+?\/\.\.\//;
+    let url = file.url;
+    const reg = /\/[^/]+?\/\.\.\//;
     while (url.match(reg)) {
       url = url.replace(reg, '/');
     }
 
-    // Make file info
-    info = file.name;
+    // Create normalized file object with clean data
+    const normalizedFile = {
+      url: url,
+      name: file.name,
+      mime: file.mime || 'application/octet-stream'
+    };
 
-    // Get type from file object or fallback to stored meta or default to 'file'
-    const type = file.type || (this.meta && this.meta.type) || 'file';
-
-    // Provide file and text for the link dialog
-    if (type === 'file') {
-      this.callback(url, { text: info, title: info });
-    }
-
-    // Provide image and alt text for the image dialog
-    if (type === 'image') {
-      this.callback(url, { alt: info });
-    }
-
-    // Provide alternative source and posted for the media dialog
-    if (type === 'media') {
-      this.callback(url);
-    }
+    // Return raw file data - let the user decide how to handle it
+    this.callback(normalizedFile);
 
     this.close();
   }
@@ -165,16 +152,62 @@ class ElFinderPicker {
 // Export the class as default
 export default ElFinderPicker;
 
-// Also export a function to create a singleton instance (for backward compatibility)
-let defaultInstance = null;
+/**
+ * Helper function for elFinder's getFileCallback
+ * Use this directly in your elFinder configuration
+ *
+ * @param {Object} file - File object from elFinder
+ * @param {Object} fm - elFinder instance
+ * @param {Object} options - Optional configuration
+ * @param {string} options.origin - Target origin for postMessage (default: '*')
+ * @example
+ * // In your elFinder page:
+ * import { filePickerCallback } from 'elfinder-picker';
+ *
+ * $('#elfinder').elfinder({
+ *   url: '/connector.php',
+ *   getFileCallback: filePickerCallback
+ * });
+ */
+export function filePickerCallback(file, fm, options = {}) {
+  // Check if we're in an iframe (select mode)
+  if (!window.parent || window.parent === window) {
+    return; // Not in iframe, do nothing
+  }
 
-export function createPicker(config) {
-  return new ElFinderPicker(config);
+  const origin = options.origin || '*';
+
+  // Send file data to parent window
+  window.parent.postMessage({
+    action: 'FILE_SELECTED',
+    file: {
+      url: file.url,
+      name: file.name,
+      mime: file.mime || 'application/octet-stream'
+    }
+  }, origin);
 }
 
-export function getDefaultInstance(config) {
-  if (!defaultInstance) {
-    defaultInstance = new ElFinderPicker(config);
-  }
-  return defaultInstance;
+/**
+ * Create a configured file picker callback with custom options
+ *
+ * @param {Object} options - Configuration options
+ * @param {string} options.origin - Target origin for postMessage (for production security)
+ * @returns {Function} Configured callback function
+ * @example
+ * import { createFilePickerCallback } from 'elfinder-picker';
+ *
+ * const callback = createFilePickerCallback({
+ *   origin: 'https://yourdomain.com'
+ * });
+ *
+ * $('#elfinder').elfinder({
+ *   url: '/connector.php',
+ *   getFileCallback: callback
+ * });
+ */
+export function createFilePickerCallback(options = {}) {
+  return function(file, fm) {
+    filePickerCallback(file, fm, options);
+  };
 }
