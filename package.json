@@ -47,7 +47,8 @@
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir dist",
     "build:demo": "vite build",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run typecheck && npm run build"
   },
   "devDependencies": {
     "typescript": "^5.6.0",

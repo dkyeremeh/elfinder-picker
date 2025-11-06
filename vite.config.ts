@@ -37,6 +37,7 @@ export default defineConfig({
         image: resolve(__dirname, 'src/demo/image.html'),
         custom: resolve(__dirname, 'src/demo/custom.html'),
         reusable: resolve(__dirname, 'src/demo/reusable.html'),
+        elfinder: resolve(__dirname, 'src/demo/elfinder.html'),
         mockElfinder: resolve(__dirname, 'src/demo/mock-elfinder.html'),
       }
     }

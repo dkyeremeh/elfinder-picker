@@ -1,10 +1,10 @@
 import ElFinderPicker, { type ElFinderFile } from '../../index';
 
-const MOCK_ELFINDER_URL = '/demo/mock-elfinder.html';
+const ELFINDER_URL = '/demo/elfinder.html';
 
 // Create picker instance ONCE (reusable)
 const reusablePicker = new ElFinderPicker({
-  url: MOCK_ELFINDER_URL
+  url: ELFINDER_URL
 });
 
 let selectionCount = 0;

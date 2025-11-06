@@ -1,6 +1,6 @@
 import ElFinderPicker, { type ElFinderFile } from '../../index';
 
-const MOCK_ELFINDER_URL = '/demo/mock-elfinder.html';
+const ELFINDER_URL = '/demo/elfinder.html';
 
 function displayImageInfo(file: ElFinderFile) {
   const resultElement = document.getElementById('result');
@@ -47,7 +47,7 @@ const button = document.getElementById('selectImageBtn');
 if (button) {
   button.addEventListener('click', () => {
     const picker = new ElFinderPicker({
-      url: MOCK_ELFINDER_URL
+      url: ELFINDER_URL
     });
 
     picker.open((file) => {

@@ -1,6 +1,6 @@
 import ElFinderPicker, { type ElFinderFile } from '../../index';
 
-const MOCK_ELFINDER_URL = '/demo/mock-elfinder.html';
+const ELFINDER_URL = '/demo/elfinder.html';
 
 interface CustomMetadata {
   type: string;
@@ -59,7 +59,7 @@ const button = document.getElementById('customPickerBtn');
 if (button) {
   button.addEventListener('click', () => {
     const picker = new ElFinderPicker({
-      url: MOCK_ELFINDER_URL
+      url: ELFINDER_URL
     });
 
     // Custom metadata

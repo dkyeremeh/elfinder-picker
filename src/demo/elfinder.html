@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>elFinder File Manager</title>
+
+  <!-- jQuery (required by elFinder) -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+  <!-- jQuery UI (required by elFinder) -->
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css">
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+  <!-- elFinder CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/elfinder@2.1.62/css/elfinder.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/elfinder@2.1.62/css/theme.css">
+
+  <!-- elFinder JS -->
+  <script src="https://cdn.jsdelivr.net/npm/elfinder@2.1.62/js/elfinder.min.js"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+    }
+
+    #elfinder {
+      width: 100%;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+  <div id="elfinder"></div>
+
+  <script>
+    $(function() {
+      // Static file connector that returns predefined files
+      // This simulates a server response without needing a backend
+      const staticConnector = {
+        /**
+         * Main connector command handler
+         */
+        send: function(opts) {
+          const cmd = opts.data.cmd;
+          const dfrd = $.Deferred();
+
+          // Handle different elFinder commands
+          switch(cmd) {
+            case 'open':
+              dfrd.resolve(this.commandOpen(opts.data));
+              break;
+            case 'file':
+              dfrd.resolve(this.commandFile(opts.data));
+              break;
+            case 'parents':
+              dfrd.resolve(this.commandParents(opts.data));
+              break;
+            default:
+              dfrd.reject({ error: ['Unknown command'] });
+          }
+
+          return dfrd.promise();
+        },
+
+        /**
+         * Handle 'open' command - returns directory contents
+         */
+        commandOpen: function(data) {
+          const target = data.target || 'root';
+
+          return {
+            cwd: {
+              hash: 'root',
+              name: 'Files',
+              mime: 'directory',
+              ts: Date.now() / 1000,
+              read: 1,
+              write: 1,
+              locked: 0,
+              dirs: 0,
+              volumeid: 'l1_'
+            },
+            files: [
+              {
+                hash: 'img1',
+                name: 'vacation-photo.jpg',
+                mime: 'image/jpeg',
+                ts: Date.now() / 1000,
+                size: 245760,
+                read: 1,
+                write: 1,
+                locked: 0,
+                url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800',
+                tmb: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200'
+              },
+              {
+                hash: 'img2',
+                name: 'profile-picture.png',
+                mime: 'image/png',
+                ts: Date.now() / 1000,
+                size: 156800,
+                read: 1,
+                write: 1,
+                locked: 0,
+                url: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=800',
+                tmb: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=200'
+              },
+              {
+                hash: 'img3',
+                name: 'sunset-beach.jpg',
+                mime: 'image/jpeg',
+                ts: Date.now() / 1000,
+                size: 312400,
+                read: 1,
+                write: 1,
+                locked: 0,
+                url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800',
+                tmb: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=200'
+              },
+              {
+                hash: 'img4',
+                name: 'mountain-landscape.jpg',
+                mime: 'image/jpeg',
+                ts: Date.now() / 1000,
+                size: 289600,
+                read: 1,
+                write: 1,
+                locked: 0,
+                url: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800',
+                tmb: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=200'
+              },
+              {
+                hash: 'doc1',
+                name: 'report-2024.pdf',
+                mime: 'application/pdf',
+                ts: Date.now() / 1000,
+                size: 524288,
+                read: 1,
+                write: 1,
+                locked: 0,
+                url: '/documents/report-2024.pdf'
+              },
+              {
+                hash: 'doc2',
+                name: 'presentation.pptx',
+                mime: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+                ts: Date.now() / 1000,
+                size: 1048576,
+                read: 1,
+                write: 1,
+                locked: 0,
+                url: '/documents/presentation.pptx'
+              },
+              {
+                hash: 'doc3',
+                name: 'spreadsheet.xlsx',
+                mime: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                ts: Date.now() / 1000,
+                size: 204800,
+                read: 1,
+                write: 1,
+                locked: 0,
+                url: '/documents/spreadsheet.xlsx'
+              },
+              {
+                hash: 'vid1',
+                name: 'video-tutorial.mp4',
+                mime: 'video/mp4',
+                ts: Date.now() / 1000,
+                size: 10485760,
+                read: 1,
+                write: 1,
+                locked: 0,
+                url: '/media/video-tutorial.mp4'
+              },
+              {
+                hash: 'aud1',
+                name: 'song.mp3',
+                mime: 'audio/mpeg',
+                ts: Date.now() / 1000,
+                size: 3145728,
+                read: 1,
+                write: 1,
+                locked: 0,
+                url: '/media/song.mp3'
+              },
+              {
+                hash: 'arc1',
+                name: 'archive.zip',
+                mime: 'application/zip',
+                ts: Date.now() / 1000,
+                size: 2097152,
+                read: 1,
+                write: 1,
+                locked: 0,
+                url: '/files/archive.zip'
+              },
+              {
+                hash: 'txt1',
+                name: 'code-snippet.txt',
+                mime: 'text/plain',
+                ts: Date.now() / 1000,
+                size: 1024,
+                read: 1,
+                write: 1,
+                locked: 0,
+                url: '/files/code-snippet.txt'
+              },
+              {
+                hash: 'svg1',
+                name: 'design-mockup.svg',
+                mime: 'image/svg+xml',
+                ts: Date.now() / 1000,
+                size: 8192,
+                read: 1,
+                write: 1,
+                locked: 0,
+                url: '/images/design-mockup.svg'
+              }
+            ],
+            options: {
+              path: 'Files',
+              separator: '/',
+              disabled: ['archive', 'extract', 'mkdir', 'mkfile', 'rename', 'duplicate', 'paste', 'upload', 'rm', 'edit', 'resize'],
+              archivers: {
+                create: [],
+                extract: []
+              }
+            }
+          };
+        },
+
+        /**
+         * Handle 'file' command - returns file info for download/preview
+         */
+        commandFile: function(data) {
+          // In a real implementation, this would return the actual file
+          // For now, we'll use the URL from the file metadata
+          return { error: ['errUnknownCmd'] };
+        },
+
+        /**
+         * Handle 'parents' command - returns parent directories
+         */
+        commandParents: function(data) {
+          return { tree: [] };
+        }
+      };
+
+      // Initialize elFinder with static connector
+      $('#elfinder').elfinder({
+        customData: {
+          _token: 'static-demo'
+        },
+        commandsOptions: {
+          getfile: {
+            // Enable file selection
+            multiple: false,
+            // Callback when files are selected
+            oncomplete: 'destroy'
+          }
+        },
+        // Use custom connector
+        transport: staticConnector,
+        // Default view
+        defaultView: 'list',
+        // UI options
+        ui: ['toolbar', 'tree', 'path', 'stat'],
+        uiOptions: {
+          toolbar: [
+            ['back', 'forward'],
+            ['reload'],
+            ['home', 'up'],
+            ['mkdir', 'mkfile', 'upload'],
+            ['open', 'download', 'getfile'],
+            ['info'],
+            ['quicklook'],
+            ['copy', 'cut', 'paste'],
+            ['rm'],
+            ['duplicate', 'rename', 'edit', 'resize'],
+            ['extract', 'archive'],
+            ['search'],
+            ['view', 'sort'],
+            ['help']
+          ]
+        },
+        resizable: false,
+        handlers: {
+          // Send selected file to parent window
+          select: function(event, elfinderInstance) {
+            const selected = elfinderInstance.data.selected;
+            if (selected && selected.length > 0) {
+              const fileHash = selected[0];
+              const fileInfo = elfinderInstance.file(fileHash);
+
+              if (fileInfo) {
+                console.log('File selected:', fileInfo);
+              }
+            }
+          }
+        },
+        // Enable getFileCallback for integration with picker
+        getFileCallback: function(file) {
+          // This is called when a file is selected via the "Get file" button
+          console.log('getFileCallback triggered:', file);
+
+          if (window.parent && window.parent !== window) {
+            // Send file data to parent window
+            window.parent.postMessage({
+              action: 'FILE_SELECTED',
+              file: {
+                url: file.url,
+                name: file.name,
+                mime: file.mime,
+                hash: file.hash
+              }
+            }, '*');
+          }
+        }
+      });
+
+      console.log('elFinder initialized with static connector');
+    });
+  </script>
+</body>
+</html>
