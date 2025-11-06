@@ -16,25 +16,40 @@ class ElFinderPicker {
     this.callback = null;
     this.meta = null;
     this.popup = null;
+    this.iframe = null;
+    this._messageHandler = this._handleMessage.bind(this);
+  }
+
+  /**
+   * Handle postMessage from iframe
+   * @private
+   */
+  _handleMessage(event) {
+    // Security check - verify message is from our iframe
+    if (!this.iframe || event.source !== this.iframe.contentWindow) return;
+
+    // Check if this is an elFinder file selection
+    if (event.data && event.data.action === 'FILE_SELECTED' && event.data.file) {
+      this.onSelect(event.data.file);
+    }
   }
 
   /**
    * Open the file picker
    * @param {Function} cb - Callback function that receives (url, info)
    * @param {*} v - Value (for compatibility)
-   * @param {Object} m - Meta information (filetype: 'file' | 'image' | 'media')
+   * @param {Object} m - Meta information (type: 'file' | 'image' | 'media')
    * @returns {HTMLElement} The popup element
    */
   open(cb, v, m) {
     this.callback = cb;
     this.meta = m;
 
-    if (this.popup) {
-      this.show();
-    } else {
+    if (this.popup) this.show();
+    else {
       this.createPopup();
+      window.addEventListener('message', this._messageHandler);
     }
-    return this.popup;
   }
 
   /**
@@ -59,6 +74,9 @@ class ElFinderPicker {
 
     document.body.appendChild(this.popup);
 
+    // Store reference to iframe for postMessage communication
+    this.iframe = this.popup.querySelector('.elfinder-picker-iframe');
+
     // Add event listeners
     const closeBtn = this.popup.querySelector('.elfinder-picker-close');
     const backdrop = this.popup.querySelector('.elfinder-picker-backdrop');
@@ -78,15 +96,14 @@ class ElFinderPicker {
   }
 
   /**
-   * Handle file insertion from elFinder
+   * Handle file selection from elFinder
    * @param {Object} file - File object from elFinder
    * @param {string} file.url - File URL
    * @param {string} file.name - File name
+   * @param {string} file.type - Type of file: 'file' | 'image' | 'media'
    */
-  oninsert(file) {
+  onSelect(file) {
     let url, reg, info;
-
-    this.meta = this.meta || { filetype: 'file' };
 
     // URL normalization
     url = file.url;
@@ -98,18 +115,21 @@ class ElFinderPicker {
     // Make file info
     info = file.name;
 
+    // Get type from file object or fallback to stored meta or default to 'file'
+    const type = file.type || (this.meta && this.meta.type) || 'file';
+
     // Provide file and text for the link dialog
-    if (this.meta.filetype === 'file') {
+    if (type === 'file') {
       this.callback(url, { text: info, title: info });
     }
 
     // Provide image and alt text for the image dialog
-    if (this.meta.filetype === 'image') {
+    if (type === 'image') {
       this.callback(url, { alt: info });
     }
 
     // Provide alternative source and posted for the media dialog
-    if (this.meta.filetype === 'media') {
+    if (type === 'media') {
       this.callback(url);
     }
 
@@ -129,10 +149,14 @@ class ElFinderPicker {
    * Destroy the popup and clean up
    */
   destroy() {
+    // Remove message listener
+    window.removeEventListener('message', this._messageHandler);
+
     if (this.popup && this.popup.parentNode) {
       this.popup.parentNode.removeChild(this.popup);
       this.popup = null;
     }
+    this.iframe = null;
     this.callback = null;
     this.meta = null;
   }
