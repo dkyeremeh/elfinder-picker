@@ -35,8 +35,8 @@ export function filePickerCallback(
   const origin = options.origin || '*';
 
   // Set up listener for navigation messages from parent (only once)
-  if (!(window as any)._elfinderNavigationListenerSet) {
-    (window as any)._elfinderNavigationListenerSet = true;
+  if (!(window as any)._isListenining) {
+    (window as any)._isListenining = true;
     window.addEventListener('message', (event: MessageEvent<NavigateToFileMessage>) => {
       // Handle NAVIGATE_TO_FILE message
       if (event.data && event.data.action === 'NAVIGATE_TO_FILE' && event.data.path) {
