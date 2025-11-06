@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>elFinder Picker - Demo Gallery</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 0.5rem;
+      font-size: 2.5rem;
+      text-align: center;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 2rem;
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .demo-card {
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 1.5rem;
+      background: #fafafa;
+      transition: all 0.3s;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .demo-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+      border-color: #667eea;
+    }
+
+    .demo-card h2 {
+      color: #444;
+      margin-bottom: 0.75rem;
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .demo-card .icon {
+      font-size: 1.5rem;
+    }
+
+    .demo-card p {
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    .demo-card .features {
+      list-style: none;
+      margin-top: 1rem;
+    }
+
+    .demo-card .features li {
+      color: #555;
+      padding: 0.25rem 0;
+      font-size: 0.9rem;
+    }
+
+    .demo-card .features li::before {
+      content: "✓ ";
+      color: #667eea;
+      font-weight: bold;
+      margin-right: 0.5rem;
+    }
+
+    .cta {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 6px;
+      font-weight: 500;
+      transition: transform 0.2s;
+    }
+
+    .demo-card:hover .cta {
+      transform: translateX(4px);
+    }
+
+    .note {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      padding: 1rem;
+      border-radius: 6px;
+      margin-bottom: 2rem;
+      color: #856404;
+    }
+
+    .note strong {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>elFinder Picker Demo Gallery</h1>
+    <p class="subtitle">Choose a demo to explore different use cases</p>
+
+    <div class="note">
+      <strong>Getting Started:</strong>
+      Select any demo below to see elFinder Picker in action. Each demo showcases different features and configurations.
+    </div>
+
+    <div class="demo-grid">
+      <a href="/demo/basic.html" class="demo-card">
+        <h2><span class="icon">📁</span> Basic File Selection</h2>
+        <p>Simple file picker with minimal configuration. Perfect for getting started.</p>
+        <ul class="features">
+          <li>Single file selection</li>
+          <li>Display file information</li>
+          <li>Basic callback handling</li>
+        </ul>
+        <span class="cta">Try Demo →</span>
+      </a>
+
+      <a href="/demo/image.html" class="demo-card">
+        <h2><span class="icon">🖼️</span> Image Selection</h2>
+        <p>Specialized picker for images with preview functionality.</p>
+        <ul class="features">
+          <li>Image file filtering</li>
+          <li>Live preview display</li>
+          <li>MIME type validation</li>
+        </ul>
+        <span class="cta">Try Demo →</span>
+      </a>
+
+      <a href="/demo/custom.html" class="demo-card">
+        <h2><span class="icon">⚙️</span> Custom Configuration</h2>
+        <p>Advanced usage with custom callbacks and metadata.</p>
+        <ul class="features">
+          <li>Custom metadata passing</li>
+          <li>Console logging</li>
+          <li>Advanced callbacks</li>
+        </ul>
+        <span class="cta">Try Demo →</span>
+      </a>
+
+      <a href="/demo/reusable.html" class="demo-card">
+        <h2><span class="icon">♻️</span> Reusable Instance</h2>
+        <p>Demonstrates how to reuse a single picker instance.</p>
+        <ul class="features">
+          <li>Instance reusability</li>
+          <li>Performance optimization</li>
+          <li>Multiple selections</li>
+        </ul>
+        <span class="cta">Try Demo →</span>
+      </a>
+    </div>
+  </div>
+</body>
+</html>

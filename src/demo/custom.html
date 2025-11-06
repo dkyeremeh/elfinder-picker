@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Configuration - elFinder Picker Demo</title>
+  <link rel="stylesheet" href="./styles/demo.css">
+</head>
+<body>
+  <div class="container">
+    <nav class="breadcrumb">
+      <a href="/demo/">← Back to Gallery</a>
+    </nav>
+
+    <h1>Custom Configuration</h1>
+    <p class="subtitle">Advanced usage with custom callbacks and metadata</p>
+
+    <div class="demo-section">
+      <h2>About This Demo</h2>
+      <p>This demo demonstrates how to pass custom metadata and use advanced callback features. Open your browser console to see detailed logs of the selection process.</p>
+    </div>
+
+    <div class="demo-section">
+      <h2>Try It Out</h2>
+      <button id="customPickerBtn" class="primary-btn">Open with Custom Config</button>
+      <div id="result" class="result-box empty">No file selected yet...</div>
+    </div>
+
+    <div class="demo-section">
+      <h2>Code Example</h2>
+      <pre><code>import ElFinderPicker from 'elfinder-picker';
+
+const picker = new ElFinderPicker({
+  url: '/path/to/elfinder'
+});
+
+const metadata = {
+  type: 'file',
+  context: 'user-upload',
+  timestamp: new Date().toISOString()
+};
+
+picker.open((file) => {
+  console.log('File:', file);
+  console.log('Metadata:', metadata);
+
+  // Process file with metadata
+  processFile(file, metadata);
+}, null, metadata);</code></pre>
+    </div>
+  </div>
+
+  <script type="module" src="/demo/scripts/custom.ts"></script>
+</body>
+</html>

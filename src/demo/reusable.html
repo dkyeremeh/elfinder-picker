@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reusable Instance - elFinder Picker Demo</title>
+  <link rel="stylesheet" href="./styles/demo.css">
+</head>
+<body>
+  <div class="container">
+    <nav class="breadcrumb">
+      <a href="/demo/">← Back to Gallery</a>
+    </nav>
+
+    <h1>Reusable Picker Instance</h1>
+    <p class="subtitle">Create once, use multiple times for better performance</p>
+
+    <div class="demo-section">
+      <h2>About This Demo</h2>
+      <p>This demo shows how to create a single picker instance and reuse it for multiple file selections. This approach is more efficient than creating a new instance each time.</p>
+    </div>
+
+    <div class="demo-section">
+      <h2>Try It Out</h2>
+      <p style="margin-bottom: 1rem; color: #666;">Click the button multiple times to select different files. Notice that the selection count increments.</p>
+      <button id="reusablePickerBtn" class="primary-btn">Open Picker (Reusable)</button>
+      <div id="result" class="result-box empty">Selection count: 0</div>
+    </div>
+
+    <div class="demo-section">
+      <h2>Code Example</h2>
+      <pre><code>import ElFinderPicker from 'elfinder-picker';
+
+// Create picker instance ONCE
+const picker = new ElFinderPicker({
+  url: '/path/to/elfinder'
+});
+
+// Reuse the same instance multiple times
+button.addEventListener('click', () => {
+  picker.open((file) => {
+    console.log('Selected:', file);
+    // Handle file selection
+  });
+});
+
+// The picker DOM is created once and shown/hidden
+// This is more efficient than creating new instances</code></pre>
+    </div>
+  </div>
+
+  <script type="module" src="/demo/scripts/reusable.ts"></script>
+</body>
+</html>

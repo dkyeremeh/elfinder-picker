@@ -57,6 +57,12 @@ picker.open((file) => {
   document.getElementById('myInput').value = file.url;
   document.getElementById('fileName').textContent = file.name;
 });
+
+// Or open with an initial value (navigates to that file in elFinder)
+const currentFile = document.getElementById('myInput').value;
+picker.open((file) => {
+  document.getElementById('myInput').value = file.url;
+}, currentFile);
 ```
 
 ## Configure elFinder
@@ -173,7 +179,7 @@ new ElFinderPicker(config)
 
 #### Methods
 
-##### `open(callback)`
+##### `open(callback, value, meta)`
 Open the file picker modal
 
 **Parameters:**
@@ -185,13 +191,23 @@ Open the file picker modal
     mime: string   // MIME type (e.g., 'image/jpeg', 'application/pdf')
   }
   ```
+- `value` (string, optional): Initial file path to navigate to in elFinder
+- `meta` (Object, optional): Metadata for TinyMCE compatibility
 
 **Example:**
 ```javascript
+// Basic usage
 picker.open((file) => {
   console.log(file.url, file.name, file.mime);
+});
 
-  // Check if it's an image
+// With initial value (navigate to specific file)
+picker.open((file) => {
+  document.getElementById('input').value = file.url;
+}, '/uploads/images/current-file.jpg');
+
+// Check file type
+picker.open((file) => {
   if (file.mime.startsWith('image/')) {
     // Handle image
   }

@@ -6,12 +6,61 @@
  */
 
 // Import CSS styles
-import './elFinderPicker.css';
+import './styles.css';
+
+/**
+ * Configuration for ElFinderPicker
+ */
+export interface ElFinderPickerConfig {
+  /** URL to the elFinder instance */
+  url?: string;
+  /** Title displayed in the picker popup (default: 'File Manager') */
+  title?: string;
+}
+
+/**
+ * File object returned by elFinder
+ */
+export interface ElFinderFile {
+  /** File URL */
+  url: string;
+  /** File name */
+  name: string;
+  /** MIME type (e.g., 'image/jpeg', 'application/pdf') */
+  mime: string;
+}
+
+/**
+ * Callback function that receives the selected file
+ */
+export type FilePickerCallback = (file: ElFinderFile) => void;
+
+/**
+ * Message data for postMessage communication
+ */
+interface FileSelectedMessage {
+  action: 'FILE_SELECTED';
+  file: ElFinderFile;
+}
+
+interface NavigateToFileMessage {
+  action: 'NAVIGATE_TO_FILE';
+  path: string;
+}
+
+type PickerMessage = FileSelectedMessage | NavigateToFileMessage;
 
 class ElFinderPicker {
-  constructor(config = {}) {
+  private settings: { url: string; title: string };
+  private callback: FilePickerCallback | null;
+  private popup: HTMLElement | null;
+  private iframe: HTMLIFrameElement | null;
+  private _messageHandler: (event: MessageEvent<PickerMessage>) => void;
+
+  constructor(config: ElFinderPickerConfig = {}) {
     this.settings = {
       url: config.url || '',
+      title: config.title || 'File Manager',
     };
     this.callback = null;
     this.popup = null;
@@ -23,23 +72,23 @@ class ElFinderPicker {
    * Handle postMessage from iframe
    * @private
    */
-  _handleMessage(event) {
+  private _handleMessage(event: MessageEvent<PickerMessage>): void {
     // Security check - verify message is from our iframe
     if (!this.iframe || event.source !== this.iframe.contentWindow) return;
 
     // Check if this is an elFinder file selection
-    if (event.data && event.data.action === 'FILE_SELECTED' && event.data.file) {
+    if (event.data && event.data.action === 'FILE_SELECTED' && 'file' in event.data) {
       this.onSelect(event.data.file);
     }
   }
 
   /**
    * Open the file picker
-   * @param {Function} cb - Callback function that receives file object
-   * @param {string} [v] - Optional initial file path to navigate to
-   * @returns {HTMLElement} The popup element
+   * @param cb - Callback function that receives file object
+   * @param v - Optional initial file path to navigate to
+   * @returns The popup element
    */
-  open(cb, v) {
+  open(cb: FilePickerCallback, v?: string): HTMLElement | null {
     this.callback = cb;
 
     if (this.popup) {
@@ -60,18 +109,21 @@ class ElFinderPicker {
         }, { once: true });
       }
     }
+
+    return this.popup;
   }
 
   /**
    * Send navigation message to iframe
    * @private
    */
-  _sendNavigationMessage(path) {
+  private _sendNavigationMessage(path: string): void {
     if (this.iframe && this.iframe.contentWindow) {
-      this.iframe.contentWindow.postMessage({
+      const message: NavigateToFileMessage = {
         action: 'NAVIGATE_TO_FILE',
         path: path
-      }, '*');
+      };
+      this.iframe.contentWindow.postMessage(message, '*');
     }
   }
 
@@ -79,12 +131,12 @@ class ElFinderPicker {
    * Create the popup DOM structure
    * @private
    */
-  createPopup() {
+  private createPopup(): void {
     const popupHTML = `
       <div class='elfinder-picker'>
         <div class='elfinder-picker-backdrop'></div>
         <div class='elfinder-picker-content'>
-          <h3 class='elfinder-picker-title'>File Manager</h3>
+          <h3 class='elfinder-picker-title'>${this.settings.title}</h3>
           <div class='elfinder-picker-close'>&times;</div>
           <iframe class='elfinder-picker-iframe' src='${this.settings.url}' allowfullscreen data-mode='select'></iframe>
         </div>
@@ -93,7 +145,7 @@ class ElFinderPicker {
 
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = popupHTML.trim();
-    this.popup = tempDiv.firstChild;
+    this.popup = tempDiv.firstChild as HTMLElement;
 
     document.body.appendChild(this.popup);
 
@@ -104,15 +156,15 @@ class ElFinderPicker {
     const closeBtn = this.popup.querySelector('.elfinder-picker-close');
     const backdrop = this.popup.querySelector('.elfinder-picker-backdrop');
 
-    closeBtn.addEventListener('click', () => this.close());
-    backdrop.addEventListener('click', () => this.close());
+    closeBtn?.addEventListener('click', () => this.close());
+    backdrop?.addEventListener('click', () => this.close());
   }
 
   /**
    * Show the popup
    * @private
    */
-  show() {
+  private show(): void {
     if (this.popup) {
       this.popup.style.display = 'block';
     }
@@ -120,12 +172,9 @@ class ElFinderPicker {
 
   /**
    * Handle file selection from elFinder
-   * @param {Object} file - Raw file object from elFinder
-   * @param {string} file.url - File URL
-   * @param {string} file.name - File name
-   * @param {string} file.mime - MIME type (e.g., 'image/jpeg', 'application/pdf')
+   * @param file - Raw file object from elFinder
    */
-  onSelect(file) {
+  private onSelect(file: ElFinderFile): void {
     // URL normalization
     let url = file.url;
     const reg = /\/[^/]+?\/\.\.\//;
@@ -134,14 +183,16 @@ class ElFinderPicker {
     }
 
     // Create normalized file object with clean data
-    const normalizedFile = {
+    const normalizedFile: ElFinderFile = {
       url: url,
       name: file.name,
       mime: file.mime || 'application/octet-stream'
     };
 
     // Return raw file data - let the user decide how to handle it
-    this.callback(normalizedFile);
+    if (this.callback) {
+      this.callback(normalizedFile);
+    }
 
     this.close();
   }
@@ -149,7 +200,7 @@ class ElFinderPicker {
   /**
    * Close the popup
    */
-  close() {
+  close(): void {
     if (this.popup) {
       this.popup.style.display = 'none';
     }
@@ -158,7 +209,7 @@ class ElFinderPicker {
   /**
    * Destroy the popup and clean up
    */
-  destroy() {
+  destroy(): void {
     // Remove message listener
     window.removeEventListener('message', this._messageHandler);
 
@@ -175,14 +226,28 @@ class ElFinderPicker {
 export default ElFinderPicker;
 
 /**
+ * elFinder instance type (minimal interface for what we use)
+ */
+interface ElFinderInstance {
+  exec?: (command: string, target: string) => void;
+}
+
+/**
+ * Options for filePickerCallback
+ */
+export interface FilePickerCallbackOptions {
+  /** Target origin for postMessage (default: '*') */
+  origin?: string;
+}
+
+/**
  * Helper function for elFinder's getFileCallback
  * Use this directly in your elFinder configuration
  * Also sets up listener for navigation messages from parent
  *
- * @param {Object} file - File object from elFinder
- * @param {Object} fm - elFinder instance
- * @param {Object} options - Optional configuration
- * @param {string} options.origin - Target origin for postMessage (default: '*')
+ * @param file - File object from elFinder
+ * @param fm - elFinder instance
+ * @param options - Optional configuration
  * @example
  * // In your elFinder page:
  * import { filePickerCallback } from 'elfinder-picker';
@@ -192,7 +257,11 @@ export default ElFinderPicker;
  *   getFileCallback: filePickerCallback
  * });
  */
-export function filePickerCallback(file, fm, options = {}) {
+export function filePickerCallback(
+  file: ElFinderFile,
+  fm?: ElFinderInstance,
+  options: FilePickerCallbackOptions = {}
+): void {
   // Check if we're in an iframe (select mode)
   if (!window.parent || window.parent === window) {
     return; // Not in iframe, do nothing
@@ -201,9 +270,9 @@ export function filePickerCallback(file, fm, options = {}) {
   const origin = options.origin || '*';
 
   // Set up listener for navigation messages from parent (only once)
-  if (!window._elfinderNavigationListenerSet) {
-    window._elfinderNavigationListenerSet = true;
-    window.addEventListener('message', (event) => {
+  if (!(window as any)._elfinderNavigationListenerSet) {
+    (window as any)._elfinderNavigationListenerSet = true;
+    window.addEventListener('message', (event: MessageEvent<NavigateToFileMessage>) => {
       // Handle NAVIGATE_TO_FILE message
       if (event.data && event.data.action === 'NAVIGATE_TO_FILE' && event.data.path) {
         if (fm && typeof fm.exec === 'function') {
@@ -215,22 +284,22 @@ export function filePickerCallback(file, fm, options = {}) {
   }
 
   // Send file data to parent window
-  window.parent.postMessage({
+  const message: FileSelectedMessage = {
     action: 'FILE_SELECTED',
     file: {
       url: file.url,
       name: file.name,
       mime: file.mime || 'application/octet-stream'
     }
-  }, origin);
+  };
+  window.parent.postMessage(message, origin);
 }
 
 /**
  * Create a configured file picker callback with custom options
  *
- * @param {Object} options - Configuration options
- * @param {string} options.origin - Target origin for postMessage (for production security)
- * @returns {Function} Configured callback function
+ * @param options - Configuration options
+ * @returns Configured callback function
  * @example
  * import { createFilePickerCallback } from 'elfinder-picker';
  *
@@ -243,8 +312,10 @@ export function filePickerCallback(file, fm, options = {}) {
  *   getFileCallback: callback
  * });
  */
-export function createFilePickerCallback(options = {}) {
-  return function(file, fm) {
+export function createFilePickerCallback(
+  options: FilePickerCallbackOptions = {}
+): (file: ElFinderFile, fm?: ElFinderInstance) => void {
+  return function(file: ElFinderFile, fm?: ElFinderInstance) {
     filePickerCallback(file, fm, options);
   };
 }

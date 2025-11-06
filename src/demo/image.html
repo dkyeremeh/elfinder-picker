@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Selection - elFinder Picker Demo</title>
+  <link rel="stylesheet" href="./styles/demo.css">
+</head>
+<body>
+  <div class="container">
+    <nav class="breadcrumb">
+      <a href="/demo/">← Back to Gallery</a>
+    </nav>
+
+    <h1>Image Selection with Preview</h1>
+    <p class="subtitle">Select images and display them with live preview</p>
+
+    <div class="demo-section">
+      <h2>About This Demo</h2>
+      <p>This demo shows how to handle image file selection with validation and preview. When you select a file, the demo checks if it's an image and displays a preview.</p>
+    </div>
+
+    <div class="demo-section">
+      <h2>Try It Out</h2>
+      <button id="selectImageBtn" class="primary-btn">Select Image</button>
+      <div id="result" class="result-box empty">No image selected yet...</div>
+    </div>
+
+    <div class="demo-section">
+      <h2>Code Example</h2>
+      <pre><code>import ElFinderPicker from 'elfinder-picker';
+
+const picker = new ElFinderPicker({
+  url: '/path/to/elfinder'
+});
+
+picker.open((file) => {
+  // Validate it's an image
+  if (file.mime && file.mime.startsWith('image/')) {
+    // Display image preview
+    const img = document.createElement('img');
+    img.src = file.url;
+    document.body.appendChild(img);
+  } else {
+    alert('Please select an image file');
+  }
+}, null, { type: 'image' });</code></pre>
+    </div>
+  </div>
+
+  <script type="module" src="/demo/scripts/image.ts"></script>
+</body>
+</html>

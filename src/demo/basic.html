@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Basic File Selection - elFinder Picker Demo</title>
+  <link rel="stylesheet" href="./styles/demo.css">
+</head>
+<body>
+  <div class="container">
+    <nav class="breadcrumb">
+      <a href="/demo/">← Back to Gallery</a>
+    </nav>
+
+    <h1>Basic File Selection</h1>
+    <p class="subtitle">Simple file picker with minimal configuration</p>
+
+    <div class="demo-section">
+      <h2>About This Demo</h2>
+      <p>This demonstrates the simplest use case of elFinder Picker. Click the button below to open the file picker and select any file. The selected file information will be displayed below.</p>
+    </div>
+
+    <div class="demo-section">
+      <h2>Try It Out</h2>
+      <button id="openPickerBtn" class="primary-btn">Open File Picker</button>
+      <div id="result" class="result-box empty">No file selected yet...</div>
+    </div>
+
+    <div class="demo-section">
+      <h2>Code Example</h2>
+      <pre><code>import ElFinderPicker from 'elfinder-picker';
+
+// Create picker instance
+const picker = new ElFinderPicker({
+  url: '/path/to/elfinder'
+});
+
+// Open picker with callback
+picker.open((file) => {
+  console.log('Selected:', file);
+  // file.url - File URL
+  // file.name - File name
+  // file.mime - MIME type
+});</code></pre>
+    </div>
+  </div>
+
+  <script type="module" src="/demo/scripts/basic.ts"></script>
+</body>
+</html>
