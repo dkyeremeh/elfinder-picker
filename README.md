@@ -32,7 +32,7 @@ yarn add elfinder-picker
 
 ```html
 <script type="module">
-  import ElFinderPicker from 'https://cdn.jsdelivr.net/npm/elfinder-picker@2/elFinderPicker.mjs';
+  import ElFinderPicker from 'https://cdn.jsdelivr.net/npm/elfinder-picker@2/dist/index.mjs';
   // Use the picker
 </script>
 ```
