@@ -141,6 +141,9 @@ class ElFinderPicker {
       url = url.replace(reg, '/');
     }
 
+    // Remove double slashes (but preserve protocol://)
+    url = url.replace(/([^:]\/)\/+/g, '$1');
+
     // Create normalized file object with clean data
     const normalizedFile: ElFinderFile = {
       url: url,
